@@ -1,9 +1,9 @@
-.layout {
+.layout-create {
   display: flex;
-  padding: 0 11rem;
 }
 
-.leftBar, .rightBar {
+.info, 
+.description {
     display: flex;
     flex-grow: 1;
     flex-direction: column;
@@ -23,7 +23,7 @@
   border-radius: 10px;
   font-size: 1rem;
   outline: none;
-  background: #f1e1e1;
+  background: #f7ecec;
   resize: none;
 }
 
@@ -31,15 +31,13 @@
   position: absolute;
   top: -0.6rem;       
   left: 0.75rem;
-  background: #f1e1e1;
+  background: #f7ecec;
   padding: 0 0.3rem;
   color: #345;
   font-size: 0.9rem;
 }
 
-textarea {
-  min-height: 150px;
-}
+
 
 
 .submit-button {

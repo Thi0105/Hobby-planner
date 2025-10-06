@@ -1,32 +1,31 @@
 import React from 'react'
+import '../src/style/Overall.css'
+import sessions from './sessions.js'
+import SessionTable from './SessionTable.js'
+import { useNavigate } from 'react-router-dom'
 
 export default function Overall() {
+
+    const navigate = useNavigate();
+
+    function chosenSession(session) {
+        navigate('/overview', {state: {session}})
+    }
+
   return (
-    <>
-        <h1>Join our activities</h1>
-        <button>Create</button>
-        <table>
-            <tr>
-                <th>Time</th>
-                <th>Title</th>
-                <th>Owner</th>
-            </tr>
-            <tr>
-                <td>5:30</td>
-                <td>Badminton</td>
-                <td>Max</td>
-            </tr>
-            <tr>
-                <td>8:00</td>
-                <td>Swimming</td>
-                <td>Anna</td>
-            </tr>
-            <tr>
-                <td>16:30</td>
-                <td>Shopping</td>
-                <td>Julia</td>
-            </tr>
-        </table> 
-    </>
+    <div className='table'>
+        <div className='row-header'>
+            <h2>Date</h2>
+            <h2>Time</h2>
+            <h2>Title</h2>
+        </div>
+
+        {sessions.map((session) => (
+            <div key={session.id}
+                onClick={() => chosenSession(session)}>
+            <SessionTable date={session.date} time={session.time} title={session.title}/>
+            </div>
+        ))}
+    </div>
   )
 }

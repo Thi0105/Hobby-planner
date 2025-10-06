@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-import './Create.css'
+import '../src/style/Create.css'
 
 export default function Create() {
 
@@ -12,9 +12,9 @@ export default function Create() {
 
   return (
     <div>
-        <h1>Create my activity</h1>
-        <div className='layout'>
-            <div className='leftBar'>
+        <h2>Create my activity</h2>
+        <div className='layout-create'>
+            <div className='info'>
                 <div className='form-group'>
                     <label >Title</label>
                     <input type='text' placeholder='' value={title}/>
@@ -36,7 +36,7 @@ export default function Create() {
                 </div>
             </div>
 
-            <div className='rightBar'>
+            <div className='description'>
                 <div className='form-group'>
                     <label>Description</label>
                     <input type='text' placeholder='' value={description}/>
@@ -45,7 +45,7 @@ export default function Create() {
         </div>
         
         <div className="submit-button">
-            <button>Create</button>
+            <button className='go-button'>Create</button>
         </div>
     </div>
   )
