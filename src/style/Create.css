@@ -38,7 +38,9 @@
 }
 
 
-
+.input {
+  box-sizing: 50px;
+}
 
 .submit-button {
   margin-top: 1.5rem;

@@ -13,10 +13,14 @@
 .leftColumn {
     display: flex;
     width: 15rem;
-    height: 3.5rem;
+    height: 3rem;
     align-items: center;
     justify-content: space-around;
-    border-right: 1px solid gray;
+}
+
+.left {
+  border-right: 1px solid gray;
+
 }
 
 .rightBar {
@@ -38,6 +42,10 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+}
+
+h4 {
+  margin: 1rem;
 }
 
 .details {

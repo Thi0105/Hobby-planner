@@ -1,10 +1,16 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import "../src/style/Details.css"
-import sessions from './sessions.js'
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import SessionDetail from './SessionDetail';
 import { useLocation } from 'react-router-dom';
 import Create from './Create.js';
+
+interface Session {
+    id: number;
+    date: string;
+    time: string;
+    title: string;
+}
 
 export default function Overview() {
 
@@ -14,11 +20,35 @@ export default function Overview() {
 
     const initialSession = location.state?.session || null;
 
-    const [presentSession, setPresentSession] = React.useState(initialSession);
+    const [sessions, setSessions] = useState([])
+    const [presentSession, setPresentSession] = useState(initialSession);
 
-    function viewSession(session) {
+    function viewSession(session: Session) {
         setPresentSession(session);
     }
+
+    useEffect(() => {
+        fetch('http://localhost:3000/sessions')
+        .then(res => res.json())
+        .then(setSessions)
+    }, [])
+
+    function handleGoing(sessionId) {
+        fetch(`http://localhost:3000/sessions/${sessionId}/go`, { method: 'POST' })
+      .then(res => res.json())
+      .then(updated => {
+        setSessions(prev => prev.map(s => s.id === updated.id ? updated : s));
+        if (presentSession?.id === updated.id) setPresentSession(updated);
+      });
+    }
+
+    const sessionsByDate: Record<string, Session[]> = {};
+    sessions.forEach(session => {
+        const dateStr = new Date(session.date).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+        if (!sessionsByDate[dateStr]) sessionsByDate[dateStr] = [];
+        sessionsByDate[dateStr].push(session);
+    });
+
 
     let rightContent;
     if (create) {
@@ -28,7 +58,7 @@ export default function Overview() {
             <>
                 <SessionDetail {...presentSession} />
                 <div className='go-button'>
-                    <button className='go-button'>I'm going</button>
+                    <button onClick={() => handleGoing(presentSession.id)} className='go-button'>I'm going</button>
                 </div>
             </>
         )
@@ -41,17 +71,19 @@ export default function Overview() {
     <div className='layout'>
         {/* Left column */}
         <div className='leftBar'>
-            <h3>Date</h3>
-
-            {sessions.map((session =>
-                <div key={session.id}
-                     className='leftColumn' 
-                     onClick={() => viewSession(session)}>
-                    <p>{session.time}</p>
-                    <p>{session.title}</p>
-                </div>
-            ))}
-            
+            {Object.keys(sessionsByDate)
+                .sort((a, b) => new Date(a).getTime() - new Date(b).getTime())
+                .map(date => (
+                    <div key={date} className='left'>
+                        <h4>{date}</h4>
+                        {sessionsByDate[date].map(session => (
+                            <div key={session.id} className='leftColumn' onClick={() => viewSession(session)}>
+                                <p>{session.time}</p>
+                                <p>{session.title}</p>
+                            </div>
+                        ))}
+                    </div>
+                ))}
         </div>
 
         {/* Right column */}

@@ -5,48 +5,79 @@ import '../src/style/Create.css'
 export default function Create() {
 
     const [title, setTitle] = useState('');
+    const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [capacity, setCapacity] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
 
+    function handleSubmit(e) {
+        e.preventDefault();
+
+        const newSession = { title, date, time, capacity, description, address };
+
+        fetch('http://localhost:3000/sessions/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSession)
+        })
+        .then(res => res.json())
+        .then(data => {
+            console.log('Created session:', data);
+            // Reset form
+            setTitle('');
+            setDate('');
+            setTime('');
+            setCapacity('');
+            setAddress('');
+            setDescription('');
+        })
+        .catch(err => console.error('Error creating session:', err));
+    }
+
+
   return (
     <div>
         <h2>Create my activity</h2>
-        <div className='layout-create'>
+        <form className='layout-create'>
             <div className='info'>
                 <div className='form-group'>
                     <label >Title</label>
-                    <input type='text' placeholder='' value={title}/>
+                    <input type='text' placeholder='' value={title} onChange={e => setTitle(e.target.value)} required/>
                 </div>
 
                 <div className='form-group'>
+                    <label>Date</label>
+                    <input type='date' placeholder='' value={date} onChange={e => setDate(e.target.value)} required/>
+                </div>
+                
+                <div className='form-group'>
                     <label>Time</label>
-                    <input type='text' placeholder='' value={time}/>
+                    <input type='time' placeholder='' value={time} onChange={e => setTime(e.target.value)} required/>
                 </div>
 
                 <div className='form-group'>
                     <label>Capacity</label>
-                    <input type='text' placeholder='' value={capacity}/>
+                    <input type='number' placeholder='' value={capacity} onChange={e => setCapacity(e.target.value)} required/>
                 </div>
 
                 <div className='form-group'>
                     <label>Address</label>
-                    <input type='text' placeholder='' value={address}/>
+                    <input type='text' placeholder='' value={address} onChange={e => setAddress(e.target.value)} required/>
                 </div>
             </div>
 
             <div className='description'>
                 <div className='form-group'>
                     <label>Description</label>
-                    <input type='text' placeholder='' value={description}/>
+                    <input className='input' type='text' placeholder='' value={description} onChange={e => setDescription(e.target.value)} required/>
                 </div>
             </div>
-        </div>
-        
-        <div className="submit-button">
-            <button className='go-button'>Create</button>
-        </div>
+        </form>
+
+            <div className="submit-button">
+                <button onClick={handleSubmit} className='go-button'>Create</button>
+            </div>
     </div>
   )
 }

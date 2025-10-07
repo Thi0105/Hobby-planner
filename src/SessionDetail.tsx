@@ -1,7 +1,7 @@
 import React from 'react'
 import '../src/style/Details.css'
 
-export default function SessionDetail({ id, title, date, time, capacity, address, description }: {id: number, title: string, date: string, time: string, capacity: number, address: string, description: string}) {
+export default function SessionDetail({title, date, time, capacity, address, description, attendance }: {title: string, date: string, time: string, capacity: number, address: string, description: string, attendance: number}) {
   return (
     <div>
       <h2>{title}</h2>
@@ -9,7 +9,7 @@ export default function SessionDetail({ id, title, date, time, capacity, address
         <h3>{time}</h3>
         <div className='capacity'>
           <i className='bi bi-person' />
-          <h3>{capacity}</h3>
+          <h3>{attendance}/{capacity}</h3>
         </div>
       </div>  
 
