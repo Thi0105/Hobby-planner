@@ -15,31 +15,31 @@ export default function Overall() {
     useEffect(() => {
         fetch('http://localhost:3000/sessions')
             .then(res => res.json())
-            .then(data => setSessions(data))
+            .then(data => setSessions(data.sessions))
             .catch(err => console.error('Error fetching sessions: ', err))
     }, [])
 
   return (
     <div className='table'>
         <table className='row-header'>
-            <head>
-                <tr>
+            <thead>
+                <tr className='row'>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Title</th>
                 </tr>
-            </head>
-            
-            <body>
-                {sessions.map((session) => (
-                    <div key={session.id}
-                        onClick={() => chosenSession(session)}>
-                    <SessionTable date={session.date} time={session.time} title={session.title}/>
-                    </div>
-                ))}
-            </body>
-        </table>
+            </thead>
 
+            <tbody>
+                {sessions.map((session) => (
+                    <tr key={session.id}
+                        onClick={() => chosenSession(session)}
+                        className='row'>
+                    <SessionTable date={session.date} time={session.time} title={session.title}/>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
     </div>
   )
 }

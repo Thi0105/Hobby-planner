@@ -1,23 +1,23 @@
 .table {
     display: flex;
-    flex-direction: column;
-    width: 100%;
+    justify-content: center;
     margin-top: 3rem;
-    border-collapse: collapse;
 }
 
 .row-header {
-    display: flex;
-    justify-content: space-around;
-    border-bottom: 1px solid gray;
+    border-collapse: collapse;
+    width: 90%;
+    overflow: hidden;
+    padding: 1rem;
 }
 
 .row {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
     border-bottom: 1px solid gray;
     height: 4rem;
+}
+.row th {
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 @media (max-width: 700px) {

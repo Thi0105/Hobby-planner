@@ -4,6 +4,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import SessionDetail from './SessionDetail';
 import { useLocation } from 'react-router-dom';
 import Create from './Create.js';
+import NamePopUp from './NamePopUp.js';
+import CodePopUp from './CodePopUp.js';
 
 interface Session {
     id: number;
@@ -18,10 +20,17 @@ export default function Overview() {
 
     const create = location.pathname.endsWith("/create");
 
+    const [showPopUp, setShowPopUp] = useState(false);
+
     const initialSession = location.state?.session || null;
 
     const [sessions, setSessions] = useState([])
     const [presentSession, setPresentSession] = useState(initialSession);
+
+    let popupComponent = null;
+    if (showPopUp) {
+        popupComponent = (<NamePopUp onGoing={(name: string) => handleGoing(presentSession.id, name)} onClose={() => setShowPopUp(false)} code={presentSession?.code}/>)
+    }
 
     function viewSession(session: Session) {
         setPresentSession(session);
@@ -30,17 +39,24 @@ export default function Overview() {
     useEffect(() => {
         fetch('http://localhost:3000/sessions')
         .then(res => res.json())
-        .then(setSessions)
+        .then(data => setSessions(data.sessions))
     }, [])
 
-    function handleGoing(sessionId) {
-        fetch(`http://localhost:3000/sessions/${sessionId}/go`, { method: 'POST' })
-      .then(res => res.json())
-      .then(updated => {
-        setSessions(prev => prev.map(s => s.id === updated.id ? updated : s));
-        if (presentSession?.id === updated.id) setPresentSession(updated);
-      });
-    }
+    function handleGoing(sessionId: number, name: string): Promise<string> {
+        return fetch(`http://localhost:3000/sessions/${sessionId}/go`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        })
+    .then(res => res.json())
+    .then(updated => {
+        setSessions(prev => 
+            prev.map(s => s.id === updated.id ? {...s, ...updated}: s));
+        if (presentSession?.id === updated.id) setPresentSession(prev => ({...prev, ...updated}));
+        console.log("Generated code: ", updated.code)
+        return updated.code
+    });
+}
 
     const sessionsByDate: Record<string, Session[]> = {};
     sessions.forEach(session => {
@@ -48,7 +64,6 @@ export default function Overview() {
         if (!sessionsByDate[dateStr]) sessionsByDate[dateStr] = [];
         sessionsByDate[dateStr].push(session);
     });
-
 
     let rightContent;
     if (create) {
@@ -58,7 +73,7 @@ export default function Overview() {
             <>
                 <SessionDetail {...presentSession} />
                 <div className='go-button'>
-                    <button onClick={() => handleGoing(presentSession.id)} className='go-button'>I'm going</button>
+                    <button onClick={() => setShowPopUp(true)} className='go-button'>Register</button>
                 </div>
             </>
         )
@@ -89,6 +104,7 @@ export default function Overview() {
         {/* Right column */}
         <div className='rightBar'>
             {rightContent}
+            {popupComponent}
         </div>
     </div>
     

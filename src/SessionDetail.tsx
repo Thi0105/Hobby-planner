@@ -1,7 +1,7 @@
 import React from 'react'
 import '../src/style/Details.css'
 
-export default function SessionDetail({title, date, time, capacity, address, description, attendance }: {title: string, date: string, time: string, capacity: number, address: string, description: string, attendance: number}) {
+export default function SessionDetail({title, date, time, capacity, address, description, attendance, people }: {title: string, date: string, time: string, capacity: number, address: string, description: string, attendance: number, people: string}) {
   return (
     <div>
       <h2>{title}</h2>
@@ -17,6 +17,7 @@ export default function SessionDetail({title, date, time, capacity, address, des
         <p>Date: {date}</p>
         <p>Description: {description}</p>
         <p>Address: {address}</p>
+        <p>People going: {people}</p>
       </div>      
     </div>
   )

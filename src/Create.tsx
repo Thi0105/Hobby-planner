@@ -70,14 +70,15 @@ export default function Create() {
             <div className='description'>
                 <div className='form-group'>
                     <label>Description</label>
-                    <input className='input' type='text' placeholder='' value={description} onChange={e => setDescription(e.target.value)} required/>
+                    <textarea placeholder='' value={description} onChange={e => setDescription(e.target.value)} required rows={4}/>
+                </div>
+
+                <div className="submit-button">
+                    <button onClick={handleSubmit} className='go-button'>Create</button>
                 </div>
             </div>
         </form>
 
-            <div className="submit-button">
-                <button onClick={handleSubmit} className='go-button'>Create</button>
-            </div>
     </div>
   )
 }
