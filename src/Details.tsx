@@ -5,7 +5,6 @@ import SessionDetail from './SessionDetail';
 import { useLocation } from 'react-router-dom';
 import Create from './Create.js';
 import NamePopUp from './NamePopUp.js';
-import CodePopUp from './CodePopUp.js';
 
 interface Session {
     id: number;

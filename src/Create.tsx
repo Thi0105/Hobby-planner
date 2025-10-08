@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import '../src/style/Create.css'
+import ManageCodePopUp from './ManageCodePopUp';
 
 export default function Create() {
 
@@ -10,6 +11,8 @@ export default function Create() {
     const [capacity, setCapacity] = useState('');
     const [address, setAddress] = useState('');
     const [description, setDescription] = useState('');
+    const [manageLink, setManageLink] = useState(null)
+    const [manageCode, setManageCode] = useState('')
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -24,6 +27,8 @@ export default function Create() {
         .then(res => res.json())
         .then(data => {
             console.log('Created session:', data);
+            setManageLink(data.manage_url)
+            setManageCode(data.manage_code)
             // Reset form
             setTitle('');
             setDate('');
@@ -33,6 +38,10 @@ export default function Create() {
             setDescription('');
         })
         .catch(err => console.error('Error creating session:', err));
+    }
+
+    if(manageLink) {
+        return <ManageCodePopUp manageCode={manageCode} manageUrl={manageLink} onClose={() => setManageLink(null)}/>
     }
 
 

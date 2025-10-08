@@ -9,7 +9,7 @@ export default function Overall() {
     const navigate = useNavigate();
 
     function chosenSession(session) {
-        navigate('/overview', {state: {session}})
+        navigate('/public', {state: {session}})
     }
 
     useEffect(() => {

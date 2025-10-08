@@ -4,6 +4,8 @@ import { createBrowserRouter, Outlet, NavLink, RouterProvider } from 'react-rout
 import Overall from './Overall'
 import Details from './Details'
 import Create from './Create'
+import ManageSession from './ManageSession'
+import PrivateSession from './PrivateSession'
 
 function App() {
 
@@ -24,7 +26,18 @@ function App() {
                       })}>Overall</NavLink>
 
                     <NavLink 
-                      to="/overview"
+                      to="/private"
+                      style={({ isActive }) => ({
+                        color: "#5f7d55",
+                        fontWeight: isActive ? "bold" : "500",
+                        fontSize: "1.3rem",
+                        padding: "0.5rem",
+                        marginLeft: "2rem",
+                        borderBottom: isActive ? "1px solid #5f7d55" : "none"
+                      })}>Private</NavLink>
+
+                    <NavLink 
+                      to="/public"
                       style={({ isActive }) => ({
                         color: "#5f7d55",
                         margin: "0 2rem",
@@ -32,10 +45,10 @@ function App() {
                         fontWeight: isActive ? "bold" : "500",
                         padding: "0.5rem",
                         borderBottom: isActive ? "1px solid #5f7d55" : "none"
-                      })} end >Details</NavLink>
+                      })} end >Public</NavLink>
 
                     <NavLink 
-                      to="/overview/create"
+                      to="/public/create"
                       style={({ isActive }) => ({
                         color: "#5f7d55",
                         fontSize: "1.3rem",
@@ -53,7 +66,7 @@ function App() {
                   element: <Overall/>
                 },
                 {
-                  path: "/overview/*",
+                  path: "/public/*",
                   element: <Details/>,
                   children: [
                     { 
@@ -61,9 +74,17 @@ function App() {
                       element: <Create/>
                     }
                   ]
+                },
+                {
+                  path: "/private",
+                  element: <PrivateSession/>
                 }
             ]
-        }
+        },
+        {
+          path: "/sessions/:id/manage",
+          element: <ManageSession />
+        },
     ])
 
   return (
