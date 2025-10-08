@@ -1,0 +1,77 @@
+.layout-private {
+  display: flex;
+  justify-content: center;
+  padding-top: 3rem;
+}
+
+.data {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem
+}
+
+.form {
+    flex-grow: 2;
+  position: relative;
+  margin: 1.5rem 0;
+}
+
+.form input,
+.form textarea {
+  width: 100%;
+  padding: 1rem 0.75rem 0.75rem 0.75rem;
+  border: 2px solid #345;
+  border-radius: 10px;
+  font-size: 1rem;
+  outline: none;
+  background: #f7ecec;
+  resize: none;
+}
+
+.form label {
+  position: absolute;
+  top: -0.6rem;       
+  left: 0.75rem;
+  background: #f7ecec;
+  padding: 0 0.3rem;
+  color: #345;
+  font-size: 0.9rem;
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+button {
+  background: #7a9e6f;
+  color: white;
+  border: none;
+  flex-grow: 1;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #5f7d55;
+}
+
+.private-session {
+  text-align: left;
+}
+
+.private-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+@media (max-width: 800px) {
+  .layout-create {
+    flex-direction: column;
+  }
+}

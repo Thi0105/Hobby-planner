@@ -2,11 +2,6 @@ import { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import '../src/style/ManageSession.css'
 
-interface ManageSessionProps {
-  id: string;
-  code: string | null;
-}
-
 interface Session {
   title: string;
   date: string;

@@ -14,10 +14,10 @@ export default function SessionDetail({title, date, time, capacity, address, des
       </div>  
 
       <div className='details'>
-        <p>Date: {date}</p>
-        <p>Description: {description}</p>
-        <p>Address: {address}</p>
-        <p>People going: {people}</p>
+        <p><strong>Date: </strong>{date}</p>
+        <p><strong>Description: </strong>{description}</p>
+        <p><strong>Address: </strong>{address}</p>
+        <p><strong>People going: </strong>{people}</p>
       </div>      
     </div>
   )
