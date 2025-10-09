@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import '../src/style/PrivateSession.css'
 import PrivateCodeCheck from './PrivateCodeCheck'
+import Form from './Form';
 
 interface Session {
   title: string;
@@ -16,8 +17,9 @@ export default function PrivateSession() {
 
     const [session, setSession] = useState<Session | null>(null)
     const [secretCode, setSecretCode] = useState('')
-    const [content, setContent] = useState(null)
     const [error, setError] = useState('')
+    const [role, setRole] = useState<string | null>(null)
+    const [editMode, setEditMode] = useState(false)
 
 
     async function handleSubmit(e) {
@@ -36,6 +38,7 @@ export default function PrivateSession() {
 
             const data = await res.json()
             setSession(data)
+            setRole(data.role)
             } catch (err: any) {
             setError(err.message)
             setSession(null)
@@ -71,20 +74,35 @@ export default function PrivateSession() {
     <div>
         <PrivateCodeCheck secretCode={secretCode} setSecretCode={setSecretCode} handleSubmit={handleSubmit}/>
         {session && (
-            <div className='private-center'>
-                <div className='private'>
-                    <h2>{session.title}</h2>
-                    <div className="private-session">
-                        <p><strong>Date:</strong> {session.date}</p>
-                        <p><strong>Time:</strong> {session.time}</p>
-                        <p><strong>Capacity:</strong> {session.capacity}</p>
-                        <p><strong>Address:</strong> {session.address}</p>
-                        <p><strong>Description:</strong> {session.description}</p>
-                        <p><strong>People going:</strong> {session.people}</p>
+            editMode ? (
+                <Form session={session} onSubmit={(updatedSession) => {setEditMode(false); setSession(updatedSession)}}/>
+            ) : (
+                <div className='private-center'>
+                    <div className='private'>
+                        <h2>{session.title}</h2>
+                        <div className="private-session">
+                            <p><strong>Date:</strong> {session.date}</p>
+                            <p><strong>Time:</strong> {session.time}</p>
+                            <p><strong>Capacity:</strong> {session.capacity}</p>
+                            <p><strong>Address:</strong> {session.address}</p>
+                            <p><strong>Description:</strong> {session.description}</p>
+                            <p><strong>People going:</strong> {session.people}</p>
+                        </div>
                     </div>
+    
+                    {role === 'creator' && (
+                        <div>
+                            <button onClick={() => setEditMode(true)}>Edit</button>
+                            <button onClick={handleRemove}>Remove</button>
+                        </div>
+                    )}
+    
+                    {role === 'attendee' && (
+                        <button onClick={handleRemove}>Remove</button>
+                    )}
                 </div>
-                <button onClick={handleRemove}>Remove</button>
-            </div>
+            )
+
         )}
     </div>
   )

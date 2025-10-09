@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import '../src/style/ManageSession.css'
 
 interface Session {
@@ -21,6 +21,8 @@ export default function ManageSession() {
     const [searchParams] = useSearchParams()
     const code = searchParams.get('code')
 
+    const navigate = useNavigate()
+
     useEffect(() => {
         if (!id || !code) {
             setError("Missing session ID or code")
@@ -39,28 +41,46 @@ export default function ManageSession() {
     if (error) return <p>{error}</p>
     if (!session) return <p>Finding session...</p>
 
+    async function handleDeleteSession() {
+      try {
+        const res = await fetch(`http://localhost:3000/session/${id}/manage?code=${code}`, {
+          method: 'DELETE',
+        })
 
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || "Failed to delete session")
+        alert(data.message)
+        navigate('/')
+
+      } catch (err) {
+        alert(err.message)
+      }
+    }
 
   return (
-    <div style={{ padding: "2rem" }}>
-      <h2>Manage Session: {session.title}</h2>
-      <p><strong>Date:</strong> {session.date}</p>
-      <p><strong>Time:</strong> {session.time}</p>
-      <p><strong>Capacity:</strong> {session.capacity}</p>
-      <p><strong>Address:</strong> {session.address}</p>
-      <p><strong>Description:</strong> {session.description}</p>
-      <p><strong>Participants:</strong></p>
-      <div className='participant-list'>
-        {
-            session.people.split(', ').map((name, index) => (
-                <div className='participants' key={index}>
-                    {name}
-                </div>
-            ))
-        }
+    <div className='manage-center'>
+      <div className='manage'>
+        <h2>Manage Session: {session.title}</h2>
+        <div className="manage-session">
+          <p><strong>Date:</strong> {session.date}</p>
+          <p><strong>Time:</strong> {session.time}</p>
+          <p><strong>Capacity:</strong> {session.capacity}</p>
+          <p><strong>Address:</strong> {session.address}</p>
+          <p><strong>Description:</strong> {session.description}</p>
+          <p><strong>Participants:</strong></p>
+          <div className='participant-list'>
+            {
+                session.people.split(', ').map((name, index) => (
+                    <div className='participant' key={index}>
+                        {name}
+                    </div>
+                ))
+            }
+          </div>
+        </div>
+        <button onClick={handleDeleteSession}>Delete session</button>
       </div>
 
-      <button>Delete session</button>
     </div>
 
   )

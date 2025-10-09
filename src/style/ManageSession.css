@@ -1,13 +1,23 @@
-.participants-grid {
+.participant-list {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   margin-top: 5px;
 }
 
-.participant-item {
-  background-color: #f0f0f0;
+.participant {
   padding: 6px;
   border-radius: 4px;
   text-align: center;
+}
+
+.manage-session {
+  text-align: left;
+}
+
+.manage-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
