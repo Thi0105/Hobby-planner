@@ -9,7 +9,7 @@ interface Session {
   capacity: number;
   address: string;
   description: string;
-  people: string;
+  name: string;
 }
 
 export default function ManageSession() {
@@ -70,7 +70,7 @@ export default function ManageSession() {
           <p><strong>Participants:</strong></p>
           <div className='participant-list'>
             {
-                session.people.split(', ').map((name, index) => (
+                session.name.split(', ').map((name, index) => (
                     <div className='participant' key={index}>
                         {name}
                     </div>

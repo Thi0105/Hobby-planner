@@ -6,10 +6,12 @@ import ManageCodePopUp from './ManageCodePopUp';
 interface FormProps {
     session: SessionType
     onSubmit : (updatedSession: SessionType) => void
+    onRemoveParticipant?: (name: string) => void 
+
 }
 
 
-export default function Create({session, onSubmit}: FormProps) {
+export default function Create({session, onSubmit, onRemoveParticipant}: FormProps) {
 
     const [title, setTitle] = useState(session?.title || '');
     const [date, setDate] = useState(session?.date || '');
@@ -18,8 +20,15 @@ export default function Create({session, onSubmit}: FormProps) {
     const [address, setAddress] = useState(session?.address || '');
     const [description, setDescription] = useState(session?.description || '');
 
+    const name = session?.name || '';
+    
     async function handleSubmit(e) {
         e.preventDefault()
+
+        if (!session) {
+        alert('No session selected.');
+        return;
+    }
 
         try {
       const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
@@ -28,16 +37,14 @@ export default function Create({session, onSubmit}: FormProps) {
         body: JSON.stringify({ title, date, time, capacity, address, description }),
       })
 
-      if (!res.ok) {
-        throw new Error('Failed to update session')
-      }
+        if (!res.ok) throw new Error('Failed to update session')
 
-      const updatedSession = await res.json()
-      onSubmit(updatedSession) 
+        const updatedSession = await res.json()
+        onSubmit(updatedSession) 
 
-    } catch (err: any) {
-      alert(err.message)
-    }
+            } catch (err: any) {
+            alert(err.message)
+        }
     }
     
   return (
@@ -76,6 +83,20 @@ export default function Create({session, onSubmit}: FormProps) {
                     <label>Description</label>
                     <textarea placeholder='' value={description} onChange={e => setDescription(e.target.value)} required rows={4}/>
                 </div>
+
+                {onRemoveParticipant && (
+                        <div className="manage-participants">
+                            <h3>Manage Participants</h3>
+                            <ul>
+                                {name.split(',').map((person) => (
+                                    <li key={person}>
+                                        {person} 
+                                        <button type="button" onClick={() => onRemoveParticipant(person)}>Remove</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
 
                 <div className="form-actions">
                     <button type="submit">Save</button>

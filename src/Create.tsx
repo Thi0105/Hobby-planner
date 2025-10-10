@@ -5,6 +5,7 @@ import ManageCodePopUp from './ManageCodePopUp';
 
 export default function Create() {
 
+    const [sessionType, setSessionType] = useState<"public" | "private">("public")
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -50,6 +51,15 @@ export default function Create() {
         <h2>Create my activity</h2>
         <form className='layout-create'>
             <div className='info'>
+
+                <div className='horizontal-group'>
+                    <label htmlFor='sessionType'>Type of session:</label>
+                    <select className='form-select' value={sessionType} onChange={e => setSessionType(e.target.value as "public" | "private")}>
+                        <option value='public'>Public</option>
+                        <option value='private'>Private</option>
+                    </select>
+                </div>
+
                 <div className='form-group'>
                     <label >Title</label>
                     <input type='text' placeholder='' value={title} onChange={e => setTitle(e.target.value)} required/>

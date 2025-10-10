@@ -4,13 +4,14 @@ import PrivateCodeCheck from './PrivateCodeCheck'
 import Form from './Form';
 
 interface Session {
+  id: string;
   title: string;
   date: string;
   time: string;
   capacity: number;
   address: string;
   description: string;
-  people: string;
+  name: string;
 }
 
 export default function PrivateSession() {
@@ -37,6 +38,7 @@ export default function PrivateSession() {
             }
 
             const data = await res.json()
+            console.log(data)
             setSession(data)
             setRole(data.role)
             } catch (err: any) {
@@ -45,7 +47,7 @@ export default function PrivateSession() {
         }
     }
 
-    async function handleRemove(e) {
+    async function handleRemoveGoing(e) {
         e.preventDefault()
 
         if (!session) return;
@@ -58,7 +60,39 @@ export default function PrivateSession() {
             })
 
             if (!res.ok) {
-                throw new Error('Failed to remove attendee')
+                const text = await res.text();
+                throw new Error('Failed to remove attendee: ' + text)
+            }
+
+            let data
+            try {
+                data = await res.json();
+            } catch {
+                throw new Error("Server did not return valid JSON.");
+            }
+            alert(data.message)
+            setSession(null);
+            setSecretCode('')
+        } catch (err) {
+            setError(err.message)
+        }
+    }
+
+    async function handleDeleteSession(e) {
+        e.preventDefault()
+
+        if (!session) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: secretCode }),
+            })
+
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error('Failed to delete session: ' + text)
             }
 
             const data = await res.json()
@@ -69,13 +103,36 @@ export default function PrivateSession() {
             setError(err.message)
         }
     }
+
+    async function handleRemoveParticipant(name: string) {
+        if (!session) return;
+
+        try {
+            const res = await fetch(`http://localhost:3000/session/${session.id}/manage/participant`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name }),
+            });
+
+            if (!res.ok) throw new Error('Failed to remove participant');
+
+            const updatedAttendees = await res.json();
+            setSession(prev => {
+                if (!prev) return null;
+                return {...prev, attendees: updatedAttendees}
+            });
+        } catch (err: any) {
+            alert(err.message);
+        }
+    }
  
   return (
     <div>
         <PrivateCodeCheck secretCode={secretCode} setSecretCode={setSecretCode} handleSubmit={handleSubmit}/>
+        
         {session && (
             editMode ? (
-                <Form session={session} onSubmit={(updatedSession) => {setEditMode(false); setSession(updatedSession)}}/>
+                <Form session={session} onSubmit={(updatedSession) => {setEditMode(false); setSession(updatedSession)}} onRemoveParticipant={role === 'creator' ? handleRemoveParticipant : undefined}/>
             ) : (
                 <div className='private-center'>
                     <div className='private'>
@@ -86,19 +143,19 @@ export default function PrivateSession() {
                             <p><strong>Capacity:</strong> {session.capacity}</p>
                             <p><strong>Address:</strong> {session.address}</p>
                             <p><strong>Description:</strong> {session.description}</p>
-                            <p><strong>People going:</strong> {session.people}</p>
+                            <p><strong>People going:</strong> {session.name}</p>
                         </div>
                     </div>
     
                     {role === 'creator' && (
                         <div>
                             <button onClick={() => setEditMode(true)}>Edit</button>
-                            <button onClick={handleRemove}>Remove</button>
+                            <button onClick={handleDeleteSession}>Remove</button>
                         </div>
                     )}
     
                     {role === 'attendee' && (
-                        <button onClick={handleRemove}>Remove</button>
+                        <button onClick={handleRemoveGoing}>Remove</button>
                     )}
                 </div>
             )
