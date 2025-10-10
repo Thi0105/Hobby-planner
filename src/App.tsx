@@ -4,7 +4,7 @@ import { createBrowserRouter, Outlet, NavLink, RouterProvider } from 'react-rout
 import Overall from './Overall'
 import Details from './Details'
 import Create from './Create'
-import ManageSession from './ManageSession'
+import ManageSession from './PrivateView'
 import PrivateSession from './PrivateSession'
 
 function App() {
@@ -23,10 +23,10 @@ function App() {
                         fontSize: "1.3rem",
                         padding: "0.5rem",
                         borderBottom: isActive ? "1px solid #5f7d55" : "none"
-                      })}>Overall</NavLink>
+                      })}>Sessions</NavLink>
 
                     <NavLink 
-                      to="/private"
+                      to="/manage"
                       style={({ isActive }) => ({
                         color: "#5f7d55",
                         fontWeight: isActive ? "bold" : "500",
@@ -34,7 +34,7 @@ function App() {
                         padding: "0.5rem",
                         marginLeft: "2rem",
                         borderBottom: isActive ? "1px solid #5f7d55" : "none"
-                      })}>Private</NavLink>
+                      })}>Manage</NavLink>
 
                     <NavLink 
                       to="/public"
@@ -45,7 +45,7 @@ function App() {
                         fontWeight: isActive ? "bold" : "500",
                         padding: "0.5rem",
                         borderBottom: isActive ? "1px solid #5f7d55" : "none"
-                      })} end >Public</NavLink>
+                      })} end >View</NavLink>
 
                     <NavLink 
                       to="/public/create"
@@ -76,7 +76,7 @@ function App() {
                   ]
                 },
                 {
-                  path: "/private",
+                  path: "/manage",
                   element: <PrivateSession/>
                 }
             ]

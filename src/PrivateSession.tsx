@@ -87,7 +87,6 @@ export default function PrivateSession() {
             const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ code: secretCode }),
             })
 
             if (!res.ok) {

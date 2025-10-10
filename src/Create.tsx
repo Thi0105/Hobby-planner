@@ -5,7 +5,7 @@ import ManageCodePopUp from './ManageCodePopUp';
 
 export default function Create() {
 
-    const [sessionType, setSessionType] = useState<"public" | "private">("public")
+    const [type, setType] = useState('public')
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -18,7 +18,7 @@ export default function Create() {
     function handleSubmit(e) {
         e.preventDefault();
 
-        const newSession = { title, date, time, capacity, description, address };
+        const newSession = { type, title, date, time, capacity, description, address };
 
         fetch('http://localhost:3000/sessions/create', {
         method: 'POST',
@@ -28,8 +28,8 @@ export default function Create() {
         .then(res => res.json())
         .then(data => {
             console.log('Created session:', data);
-            setManageLink(data.manage_url)
-            setManageCode(data.manage_code)
+            setManageLink(data.manageUrl)
+            setManageCode(data.manageCode)
             // Reset form
             setTitle('');
             setDate('');
@@ -54,9 +54,9 @@ export default function Create() {
 
                 <div className='horizontal-group'>
                     <label htmlFor='sessionType'>Type of session:</label>
-                    <select className='form-select' value={sessionType} onChange={e => setSessionType(e.target.value as "public" | "private")}>
-                        <option value='public'>Public</option>
-                        <option value='private'>Private</option>
+                    <select className='form-select' value={type} onChange={e => setType(e.target.value)}>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
                     </select>
                 </div>
 
@@ -73,20 +73,20 @@ export default function Create() {
                 <div className='form-group'>
                     <label>Time</label>
                     <input type='time' placeholder='' value={time} onChange={e => setTime(e.target.value)} required/>
-                </div>
+                </div>                
+            </div>
 
+            <div className='description'>
                 <div className='form-group'>
                     <label>Capacity</label>
-                    <input type='number' placeholder='' value={capacity} onChange={e => setCapacity(e.target.value)} required/>
+                    <input type='text' placeholder='' value={capacity} onChange={e => setCapacity(e.target.value)} required/>
                 </div>
 
                 <div className='form-group'>
                     <label>Address</label>
                     <input type='text' placeholder='' value={address} onChange={e => setAddress(e.target.value)} required/>
                 </div>
-            </div>
 
-            <div className='description'>
                 <div className='form-group'>
                     <label>Description</label>
                     <textarea placeholder='' value={description} onChange={e => setDescription(e.target.value)} required rows={4}/>

@@ -11,8 +11,8 @@ export default function CodePopUp({code, onClose}: CodePopUpProps) {
       <div className='popup-overlay'>
         <div className='popup-container'>
             <h3>Thank you for joining!</h3>
-            <p>Your attendance code is: </p>
-            <code>{code}</code>
+            <p>Your secret code is: </p>
+            <p><strong>{code}</strong></p>
             <div>
                 <button onClick={onClose}>Close</button>
             </div>

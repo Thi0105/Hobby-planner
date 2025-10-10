@@ -1,7 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
 import '../src/style/Create.css'
-import ManageCodePopUp from './ManageCodePopUp';
 
 interface FormProps {
     session: SessionType

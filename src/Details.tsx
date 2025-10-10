@@ -47,15 +47,15 @@ export default function Overview() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name })
         })
-    .then(res => res.json())
-    .then(updated => {
-        setSessions(prev => 
-            prev.map(s => s.id === updated.id ? {...s, ...updated}: s));
-        if (presentSession?.id === updated.id) setPresentSession(prev => ({...prev, ...updated}));
-        console.log("Generated code: ", updated.code)
-        return updated.code
-    });
-}
+        .then(res => res.json())
+        .then(updated => {
+            setSessions(prev => 
+                prev.map(s => s.id === updated.id ? {...s, ...updated}: s));
+            if (presentSession?.id === updated.id) setPresentSession(prev => ({...prev, ...updated}));
+            console.log("Generated code: ", updated.code)
+            return updated.code
+        });
+    }
 
     const sessionsByDate: Record<string, Session[]> = {};
     sessions.forEach(session => {

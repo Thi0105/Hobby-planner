@@ -24,61 +24,44 @@ export default function ManageSession() {
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!id || !code) {
+        if (!code) {
             setError("Missing session ID or code")
             return
         }
 
-        fetch(`http://localhost:3000/sessions/${id}/manage?code=${code}`)
+        fetch(`http://localhost:3000/session/manage?code=${code}`)
             .then(res => {
                 if (!res.ok) throw new Error ("Invalid  Url or session not found!")
                 return res.json()
             })
-            .then(data => setSession(data))
+            .then(data => {
+              if (!data) {
+                setError("Session not found")
+                return
+              }
+              setSession(data.session)
+            })
             .catch(err => setError(err.message))
-    },[id, code])
+        }, [code])
 
     if (error) return <p>{error}</p>
     if (!session) return <p>Finding session...</p>
 
-    async function handleDeleteSession() {
-      try {
-        const res = await fetch(`http://localhost:3000/session/${id}/manage?code=${code}`, {
-          method: 'DELETE',
-        })
-
-        const data = await res.json()
-        if (!res.ok) throw new Error(data.error || "Failed to delete session")
-        alert(data.message)
-        navigate('/')
-
-      } catch (err) {
-        alert(err.message)
-      }
-    }
+    
 
   return (
     <div className='manage-center'>
       <div className='manage'>
-        <h2>Manage Session: {session.title}</h2>
+        <h2>Private session: {session.title}</h2>
         <div className="manage-session">
           <p><strong>Date:</strong> {session.date}</p>
           <p><strong>Time:</strong> {session.time}</p>
           <p><strong>Capacity:</strong> {session.capacity}</p>
           <p><strong>Address:</strong> {session.address}</p>
           <p><strong>Description:</strong> {session.description}</p>
-          <p><strong>Participants:</strong></p>
-          <div className='participant-list'>
-            {
-                session.name.split(', ').map((name, index) => (
-                    <div className='participant' key={index}>
-                        {name}
-                    </div>
-                ))
-            }
-          </div>
+          <p><strong>Participants:</strong>{session.name}</p>
         </div>
-        <button onClick={handleDeleteSession}>Delete session</button>
+        <button onClick={handleGoing}>I'm going</button>
       </div>
 
     </div>
