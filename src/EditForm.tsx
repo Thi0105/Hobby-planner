@@ -1,5 +1,4 @@
-import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import '../src/style/Create.css'
 
 interface FormProps {
@@ -20,7 +19,19 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
     const [address, setAddress] = useState(session?.address || '');
     const [description, setDescription] = useState(session?.description || '');
     const [participants, setParticipants] = useState<string[]>((session.name || '').split(', ').map(p => p.trim()).filter(Boolean));
-    
+
+
+
+    const handleRemove = async (person: string) => {
+
+        try {
+            if (onRemoveParticipant) await onRemoveParticipant(person);
+            setParticipants(prev => prev.filter(p => p !== person));
+        } catch (err: any) {
+            alert(err.message);
+        }
+    };
+
     async function handleSubmit(e) {
         e.preventDefault()
 
@@ -33,7 +44,7 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
       const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, date, time, capacity, address, description }),
+        body: JSON.stringify({ type, title, date, time, capacity, address, description }),
       })
 
         if (!res.ok) throw new Error('Failed to update session')
@@ -96,23 +107,22 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
                         <div className="manage-participants">
                             <h3>Manage Participants</h3>
                             <div className="participant-list">
-                                {(session.name || '').split(', ').map((personRow) => {
-                                    const person = personRow.trim();
-                                    if (!person) return null;
-                                    return (
+                                {participants.length > 0 ? (
+                                    participants.map(person => (
                                         <div 
                                             key={person} 
                                             className='participant-name' 
-                                            onClick={() => { 
-                                                if (confirm(`Remove ${person}`)) return 
-                                                onRemoveParticipant(person)
+                                            onClick={() => {
+                                                if (!confirm(`Remove ${person}?`)) return;
+                                                handleRemove(person); 
                                             }}
                                         >
                                             {person}
                                         </div>
-                                    )
-                                })}
-
+                                    ))
+                                ) : (
+                                    <div></div>
+                                )}
                             </div>
                         </div>
                     )
