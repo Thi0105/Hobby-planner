@@ -91,9 +91,55 @@ button {
   cursor: pointer;
 }
 
+.remove-button {
+  
+}
+
 button:hover {
   background: #5f7d55;
 }
+
+.manage-participants {
+  margin-top: 20px;
+}
+
+.manage-participants h3 {
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.participant-name {
+  position: relative;
+  cursor: pointer;
+  color: #000;
+  transition: color 0.25s ease;
+}
+
+.participant-name::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.8em; /* move line closer to text */
+  width: 0;
+  height: 2px;
+  background-color: #d11a2a;
+  transition: width 0.25s ease;
+}
+
+.participant-name:hover {
+  color: #d11a2a;
+}
+
+.participant-name:hover::after {
+  width: 100%;
+}
+
 
 @media (max-width: 800px) {
   .layout-create {

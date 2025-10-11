@@ -70,7 +70,7 @@ export default function Overview() {
     } else if (presentSession) {
         rightContent = (
             <>
-                <SessionDetail {...presentSession} />
+                <SessionDetail {...presentSession} attendees={presentSession.attendees} />
                 <div className='go-button'>
                     <button onClick={() => setShowPopUp(true)} className='go-button'>Register</button>
                 </div>

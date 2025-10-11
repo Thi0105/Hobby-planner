@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
 import '../src/style/ManageSession.css'
+import NamePopUp from './NamePopUp'
 
 interface Session {
+  id: number
   title: string;
   date: string;
   time: string;
@@ -10,12 +12,14 @@ interface Session {
   address: string;
   description: string;
   name: string;
+  code: string
 }
 
 export default function ManageSession() {
 
     const [session, setSession] = useState<Session | null>(null)
     const [error, setError] = useState('')
+    const [showPopUp, setShowPopUp] = useState(false);
 
     const {id} = useParams()
     const [searchParams] = useSearchParams()
@@ -47,7 +51,24 @@ export default function ManageSession() {
     if (error) return <p>{error}</p>
     if (!session) return <p>Finding session...</p>
 
+    let popupComponent = null;
+        if (showPopUp) {
+            popupComponent = (<NamePopUp onGoing={(name: string) => handleGoing(session.id, name)} onClose={() => setShowPopUp(false)}/>)
+        }
     
+    function handleGoing(sessionId: number, name: string): Promise<string> {
+        return fetch(`http://localhost:3000/sessions/manage/${sessionId}/go`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name })
+        })
+        .then(res => res.json())
+        .then(updated => {
+            console.log("Generated code: ", updated.code)
+            navigate('/')
+            return updated.code
+        });
+    }
 
   return (
     <div className='manage-center'>
@@ -61,7 +82,10 @@ export default function ManageSession() {
           <p><strong>Description:</strong> {session.description}</p>
           <p><strong>Participants:</strong>{session.name}</p>
         </div>
-        <button onClick={handleGoing}>I'm going</button>
+        <button onClick={() => setShowPopUp(true)}>I'm going</button>
+        {showPopUp && (
+          <NamePopUp onGoing={(name: string) => handleGoing(session.id, name)} onClose={() => setShowPopUp(false)}/>
+      )}
       </div>
 
     </div>

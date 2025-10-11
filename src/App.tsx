@@ -37,7 +37,7 @@ function App() {
                       })}>Manage</NavLink>
 
                     <NavLink 
-                      to="/public"
+                      to="/overview"
                       style={({ isActive }) => ({
                         color: "#5f7d55",
                         margin: "0 2rem",
@@ -48,7 +48,7 @@ function App() {
                       })} end >View</NavLink>
 
                     <NavLink 
-                      to="/public/create"
+                      to="/overview/create"
                       style={({ isActive }) => ({
                         color: "#5f7d55",
                         fontSize: "1.3rem",
@@ -66,7 +66,7 @@ function App() {
                   element: <Overall/>
                 },
                 {
-                  path: "/public/*",
+                  path: "/overview/*",
                   element: <Details/>,
                   children: [
                     { 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import '../src/style/PrivateSession.css'
 import PrivateCodeCheck from './PrivateCodeCheck'
-import Form from './Form';
+import EditForm from './EditForm';
 
 interface Session {
   id: string;
@@ -110,16 +110,14 @@ export default function PrivateSession() {
             const res = await fetch(`http://localhost:3000/session/${session.id}/manage/participant`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name }),
+            body: JSON.stringify({ name }), 
             });
 
             if (!res.ok) throw new Error('Failed to remove participant');
 
-            const updatedAttendees = await res.json();
-            setSession(prev => {
-                if (!prev) return null;
-                return {...prev, attendees: updatedAttendees}
-            });
+            const updatedSession = await res.json();
+            setSession(updatedSession)
+
         } catch (err: any) {
             alert(err.message);
         }
@@ -131,7 +129,7 @@ export default function PrivateSession() {
         
         {session && (
             editMode ? (
-                <Form session={session} onSubmit={(updatedSession) => {setEditMode(false); setSession(updatedSession)}} onRemoveParticipant={role === 'creator' ? handleRemoveParticipant : undefined}/>
+                <EditForm session={session} onSubmit={(updatedSession) => {setEditMode(false); setSession(updatedSession)}} onRemoveParticipant={role === 'creator' ? handleRemoveParticipant : undefined}/>
             ) : (
                 <div className='private-center'>
                     <div className='private'>

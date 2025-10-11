@@ -12,14 +12,14 @@ interface FormProps {
 
 export default function Create({session, onSubmit, onRemoveParticipant}: FormProps) {
 
+    const [type, setType] = useState('public')
     const [title, setTitle] = useState(session?.title || '');
     const [date, setDate] = useState(session?.date || '');
     const [time, setTime] = useState(session?.time || '');
     const [capacity, setCapacity] = useState(session?.capacity || '');
     const [address, setAddress] = useState(session?.address || '');
     const [description, setDescription] = useState(session?.description || '');
-
-    const name = session?.name || '';
+    const [participants, setParticipants] = useState<string[]>((session.name || '').split(', ').map(p => p.trim()).filter(Boolean));
     
     async function handleSubmit(e) {
         e.preventDefault()
@@ -51,6 +51,15 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
         <h2>Edit the session</h2>
         <form className='layout-create' onSubmit={handleSubmit}>
             <div className='info'>
+
+                <div className='horizontal-group'>
+                    <label htmlFor='sessionType'>Type of session:</label>
+                    <select className='form-select' value={type} onChange={e => setType(e.target.value)}>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                </div>
+
                 <div className='form-group'>
                     <label >Title</label>
                     <input type='text' placeholder='' value={title} onChange={e => setTitle(e.target.value)} required/>
@@ -86,16 +95,28 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
                 {onRemoveParticipant && (
                         <div className="manage-participants">
                             <h3>Manage Participants</h3>
-                            <ul>
-                                {name.split(',').map((person) => (
-                                    <li key={person}>
-                                        {person} 
-                                        <button type="button" onClick={() => onRemoveParticipant(person)}>Remove</button>
-                                    </li>
-                                ))}
-                            </ul>
+                            <div className="participant-list">
+                                {(session.name || '').split(', ').map((personRow) => {
+                                    const person = personRow.trim();
+                                    if (!person) return null;
+                                    return (
+                                        <div 
+                                            key={person} 
+                                            className='participant-name' 
+                                            onClick={() => { 
+                                                if (confirm(`Remove ${person}`)) return 
+                                                onRemoveParticipant(person)
+                                            }}
+                                        >
+                                            {person}
+                                        </div>
+                                    )
+                                })}
+
+                            </div>
                         </div>
-                    )}
+                    )
+                }
 
                 <div className="form-actions">
                     <button type="submit">Save</button>
