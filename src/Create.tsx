@@ -5,7 +5,8 @@ import ManageCodePopUp from './ManageCodePopUp';
 
 export default function Create() {
 
-    const [type, setType] = useState('public')
+    const [type, setType] = useState('Public')
+    const [email, setEmail] = useState('')
     const [title, setTitle] = useState('');
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
@@ -15,33 +16,39 @@ export default function Create() {
     const [manageLink, setManageLink] = useState(null)
     const [manageCode, setManageCode] = useState('')
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
 
-        const newSession = { type, title, date, time, capacity, description, address };
+        const newSession = { email, type, title, date, time, capacity, description, address };
 
-        fetch('http://localhost:3000/sessions/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSession)
-        })
-        .then(res => res.json())
-        .then(data => {
+        try {
+            const res = await fetch('http://localhost:3000/sessions/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newSession)
+            })
+
+            const data = await res.json()
             console.log('Created session:', data);
+
             setManageLink(data.manageUrl)
             setManageCode(data.manageCode)
-            // Reset form
+
             setTitle('');
             setDate('');
             setTime('');
             setCapacity('');
             setAddress('');
             setDescription('');
-        })
-        .catch(err => console.error('Error creating session:', err));
+            setEmail('');
+        
+
+        } catch(err) {
+            console.error('Error creating session:', err);
+        } 
     }
 
-    if(manageLink) {
+    if (manageLink) {
         return <ManageCodePopUp manageCode={manageCode} manageUrl={manageLink} onClose={() => setManageLink(null)}/>
     }
 
@@ -55,8 +62,8 @@ export default function Create() {
                 <div className='horizontal-group'>
                     <label htmlFor='sessionType'>Type of session:</label>
                     <select className='form-select' value={type} onChange={e => setType(e.target.value)}>
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
                     </select>
                 </div>
 
@@ -90,6 +97,11 @@ export default function Create() {
                 <div className='form-group'>
                     <label>Description</label>
                     <textarea placeholder='' value={description} onChange={e => setDescription(e.target.value)} required rows={4}/>
+                </div>
+
+                <div className='form-group'>
+                    <label >Email</label>
+                    <input type='email' placeholder='' value={email} onChange={e => setEmail(e.target.value)} required/>
                 </div>
 
                 <div className="submit-button">

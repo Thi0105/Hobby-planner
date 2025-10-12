@@ -145,9 +145,9 @@ export default function PrivateSession() {
                     </div>
     
                     {role === 'creator' && (
-                        <div>
+                        <div className='creator-buttons'>
                             <button onClick={() => setEditMode(true)}>Edit</button>
-                            <button onClick={handleDeleteSession}>Remove</button>
+                            <button onClick={handleDeleteSession}>Delete</button>
                         </div>
                     )}
     

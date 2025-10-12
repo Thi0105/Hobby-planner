@@ -20,6 +20,7 @@ export default function Overview() {
     const create = location.pathname.endsWith("/create");
 
     const [showPopUp, setShowPopUp] = useState(false);
+    const [showButton, setShowButton] = useState(true);
 
     const initialSession = location.state?.session || null;
 
@@ -71,9 +72,11 @@ export default function Overview() {
         rightContent = (
             <>
                 <SessionDetail {...presentSession} attendees={presentSession.attendees} />
-                <div className='go-button'>
-                    <button onClick={() => setShowPopUp(true)} className='go-button'>Register</button>
-                </div>
+                {(presentSession.attendance < presentSession.capacity) && (
+                    <div className='go-button'>
+                        <button onClick={() => setShowPopUp(true)} className='go-button'>Register</button>
+                    </div>
+                )}
             </>
         )
     } else {

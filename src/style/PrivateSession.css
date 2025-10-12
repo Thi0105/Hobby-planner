@@ -63,6 +63,15 @@ button:hover {
   text-align: left;
 }
 
+.private {
+  padding-bottom: 1rem;
+}
+
+.creator-buttons {
+  display: flex;
+  gap: 1rem
+}
+
 .private-center {
   display: flex;
   justify-content: center;

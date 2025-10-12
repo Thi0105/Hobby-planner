@@ -11,7 +11,7 @@ interface FormProps {
 
 export default function Create({session, onSubmit, onRemoveParticipant}: FormProps) {
 
-    const [type, setType] = useState('public')
+    const [type, setType] = useState('Public')
     const [title, setTitle] = useState(session?.title || '');
     const [date, setDate] = useState(session?.date || '');
     const [time, setTime] = useState(session?.time || '');
@@ -66,8 +66,8 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
                 <div className='horizontal-group'>
                     <label htmlFor='sessionType'>Type of session:</label>
                     <select className='form-select' value={type} onChange={e => setType(e.target.value)}>
-                        <option value="public">Public</option>
-                        <option value="private">Private</option>
+                        <option value="Public">Public</option>
+                        <option value="Private">Private</option>
                     </select>
                 </div>
 

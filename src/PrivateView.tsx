@@ -5,6 +5,7 @@ import NamePopUp from './NamePopUp'
 
 interface Session {
   id: number
+  type: string
   title: string;
   date: string;
   time: string;
@@ -53,28 +54,31 @@ export default function ManageSession() {
 
     let popupComponent = null;
         if (showPopUp) {
-            popupComponent = (<NamePopUp onGoing={(name: string) => handleGoing(session.id, name)} onClose={() => setShowPopUp(false)}/>)
+            popupComponent = (<NamePopUp onGoing={(name: string, email: string) => handleGoing(session.id, name, email)} onClose={() => {setShowPopUp(false); navigate('/')}}/>)
         }
     
-    function handleGoing(sessionId: number, name: string): Promise<string> {
-        return fetch(`http://localhost:3000/sessions/manage/${sessionId}/go`, {
+    async function handleGoing(sessionId: number, name: string, email: string): Promise<string> {
+      try {
+        const res = await fetch(`http://localhost:3000/sessions/${sessionId}/go`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, email })
         })
-        .then(res => res.json())
-        .then(updated => {
-            console.log("Generated code: ", updated.code)
-            navigate('/')
-            return updated.code
-        });
+        const data = await res.json()
+        if (!res.ok) throw new Error(data.error || "Failed to join session")
+        console.log("Generated code: ", data.code)
+        return data.code
+      } catch (err: any) {
+          alert(err.message)
+      }
     }
 
   return (
     <div className='manage-center'>
       <div className='manage'>
-        <h2>Private session: {session.title}</h2>
+        <h2>{session.title}</h2>
         <div className="manage-session">
+          <p><strong>Type: {session.type}</strong></p>
           <p><strong>Date:</strong> {session.date}</p>
           <p><strong>Time:</strong> {session.time}</p>
           <p><strong>Capacity:</strong> {session.capacity}</p>
@@ -84,7 +88,7 @@ export default function ManageSession() {
         </div>
         <button onClick={() => setShowPopUp(true)}>I'm going</button>
         {showPopUp && (
-          <NamePopUp onGoing={(name: string) => handleGoing(session.id, name)} onClose={() => setShowPopUp(false)}/>
+          <NamePopUp onGoing={(name: string, email: string) => handleGoing(session.id, name, email)} onClose={() => {setShowPopUp(false); navigate('/')}}/>
       )}
       </div>
 
