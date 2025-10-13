@@ -75,7 +75,7 @@ export default function PrivateSession() {
         if (!session) return;
 
         try {
-            const res = await fetch(`${API_URL}/${session.id}/manage`, {
+            const res = await fetch(`${API_URL}/session/${session.id}/manage`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             })
