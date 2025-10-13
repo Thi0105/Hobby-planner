@@ -2,32 +2,23 @@ import { useState } from 'react'
 import '../src/style/PrivateSession.css'
 import PrivateCodeCheck from './PrivateCodeCheck'
 import EditForm from './EditForm';
+import type { Session } from './interface';
 
-interface Session {
-  id: string;
-  title: string;
-  date: string;
-  time: string;
-  capacity: number;
-  address: string;
-  description: string;
-  name: string;
-}
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function PrivateSession() {
 
     const [session, setSession] = useState<Session | null>(null)
     const [secretCode, setSecretCode] = useState('')
-    const [error, setError] = useState('')
     const [role, setRole] = useState<string | null>(null)
     const [editMode, setEditMode] = useState(false)
 
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e: any) {
         e.preventDefault()
 
         try {
-            const res = await fetch('http://localhost:3000/session/verify', {
+            const res = await fetch(`${API_URL}/session/verify`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: secretCode }),
@@ -41,19 +32,19 @@ export default function PrivateSession() {
             console.log(data)
             setSession(data)
             setRole(data.role)
-            } catch (err: any) {
-            setError(err.message)
+        } catch (err: any) {
+            console.log(err.message)
             setSession(null)
         }
     }
 
-    async function handleRemoveGoing(e) {
+    async function handleRemoveGoing(e: any) {
         e.preventDefault()
 
         if (!session) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/session/go`, {
+            const res = await fetch(`${API_URL}/session/go`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ code: secretCode }),
@@ -73,18 +64,18 @@ export default function PrivateSession() {
             alert(data.message)
             setSession(null);
             setSecretCode('')
-        } catch (err) {
-            setError(err.message)
+        } catch (err: any) {
+            console.log(err.message)
         }
     }
 
-    async function handleDeleteSession(e) {
+    async function handleDeleteSession(e: any) {
         e.preventDefault()
 
         if (!session) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
+            const res = await fetch(`${API_URL}/${session.id}/manage`, {
                 method: 'DELETE',
                 headers: { 'Content-Type': 'application/json' },
             })
@@ -98,8 +89,8 @@ export default function PrivateSession() {
             alert(data.message)
             setSession(null);
             setSecretCode('')
-        } catch (err) {
-            setError(err.message)
+        } catch (err: any) {
+            console.log(err.message)
         }
     }
 
@@ -107,7 +98,7 @@ export default function PrivateSession() {
         if (!session) return;
 
         try {
-            const res = await fetch(`http://localhost:3000/session/${session.id}/manage/participant`, {
+            const res = await fetch(`${API_URL}/session/${session.id}/manage/participant`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name }), 

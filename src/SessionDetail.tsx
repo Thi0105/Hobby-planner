@@ -1,7 +1,18 @@
-import React from 'react'
 import '../src/style/Details.css'
+import type { Attendee } from './interface';
 
-export default function SessionDetail({title, date, time, capacity, address, description, attendance, attendees }: {title: string, date: string, time: string, capacity: number, address: string, description: string, attendance: number, attendees: {id: number; name: string}[]}) {
+interface SessionDetailProps {
+  title: string;
+  date: string;
+  time: string;
+  capacity: number;
+  address: string;
+  description: string;
+  attendance: number;
+  attendees: Attendee[]; 
+}
+
+export default function SessionDetail({title, date, time, capacity, address, description, attendance, attendees }: SessionDetailProps) {
   return (
     <div>
       <h2>{title}</h2>

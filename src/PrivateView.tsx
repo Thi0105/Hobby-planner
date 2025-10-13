@@ -1,20 +1,11 @@
 import { useState, useEffect } from 'react'
-import { useParams, useSearchParams, useNavigate } from 'react-router-dom'
+import { useSearchParams, useNavigate } from 'react-router-dom'
 import '../src/style/ManageSession.css'
 import NamePopUp from './NamePopUp'
+import type { Session } from './interface'
 
-interface Session {
-  id: number
-  type: string
-  title: string;
-  date: string;
-  time: string;
-  capacity: number;
-  address: string;
-  description: string;
-  name: string;
-  code: string
-}
+const API_URL = import.meta.env.VITE_API_URL
+
 
 export default function ManageSession() {
 
@@ -22,7 +13,6 @@ export default function ManageSession() {
     const [error, setError] = useState('')
     const [showPopUp, setShowPopUp] = useState(false);
 
-    const {id} = useParams()
     const [searchParams] = useSearchParams()
     const code = searchParams.get('code')
 
@@ -34,7 +24,7 @@ export default function ManageSession() {
             return
         }
 
-        fetch(`http://localhost:3000/session/manage?code=${code}`)
+        fetch(`${API_URL}/session/manage?code=${code}`)
             .then(res => {
                 if (!res.ok) throw new Error ("Invalid  Url or session not found!")
                 return res.json()
@@ -57,9 +47,9 @@ export default function ManageSession() {
             popupComponent = (<NamePopUp onGoing={(name: string, email: string) => handleGoing(session.id, name, email)} onClose={() => {setShowPopUp(false); navigate('/')}}/>)
         }
     
-    async function handleGoing(sessionId: number, name: string, email: string): Promise<string> {
+    async function handleGoing(sessionId: number, name: string, email: string) {
       try {
-        const res = await fetch(`http://localhost:3000/sessions/${sessionId}/go`, {
+        const res = await fetch(`${API_URL}/sessions/${sessionId}/go`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email })

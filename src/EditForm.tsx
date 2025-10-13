@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import '../src/style/Create.css'
+import type {Session} from './interface'
+
+const API_URL = import.meta.env.VITE_API_URL
 
 interface FormProps {
-    session: SessionType
-    onSubmit : (updatedSession: SessionType) => void
+    session: Session
+    onSubmit : (updatedSession: Session) => void
     onRemoveParticipant?: (name: string) => void 
 
 }
@@ -32,7 +35,7 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
         }
     };
 
-    async function handleSubmit(e) {
+    async function handleSubmit(e: any) {
         e.preventDefault()
 
         if (!session) {
@@ -41,7 +44,7 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
     }
 
         try {
-      const res = await fetch(`http://localhost:3000/session/${session.id}/manage`, {
+      const res = await fetch(`${API_URL}/session/${session.id}/manage`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, title, date, time, capacity, address, description }),
@@ -88,7 +91,7 @@ export default function Create({session, onSubmit, onRemoveParticipant}: FormPro
 
                 <div className='form-group'>
                     <label>Capacity</label>
-                    <input type='number' placeholder='' value={capacity} onChange={e => setCapacity(e.target.value)} required/>
+                    <input type='text' placeholder='' value={capacity} onChange={e => setCapacity(e.target.value)} required/>
                 </div>
 
                 <div className='form-group'>

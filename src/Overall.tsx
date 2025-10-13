@@ -2,20 +2,24 @@ import { useState, useEffect } from 'react'
 import '../src/style/Overall.css'
 import SessionTable from './SessionTable.js'
 import { useNavigate } from 'react-router-dom'
+import type {Session} from './interface.js'
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function Overall() {
 
-    const [sessions, setSessions] = useState([])
+    const [sessions, setSessions] = useState<Session[]>([])
     const navigate = useNavigate();
 
-    function chosenSession(session) {
-        navigate('/overview', {state: {session}})
+    function chosenSession(session: Session) {
+        navigate('/overview', {state: session})
     }
 
     useEffect(() => {
-        fetch('http://localhost:3000/sessions')
+        fetch(`${API_URL}/sessions`)
             .then(res => res.json())
-            .then(data => setSessions(data.sessions))
+            .then(data => setSessions(data.sessions)
+            )
             .catch(err => console.error('Error fetching sessions: ', err))
     }, [])
 

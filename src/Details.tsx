@@ -5,48 +5,58 @@ import SessionDetail from './SessionDetail';
 import { useLocation } from 'react-router-dom';
 import Create from './Create.js';
 import NamePopUp from './NamePopUp.js';
+import type { Session } from './interface.js';
 
-interface Session {
-    id: number;
-    date: string;
-    time: string;
-    title: string;
-}
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function Overview() {
 
     const location = useLocation();
-
+    const [showPopUp, setShowPopUp] = useState(false);
     const create = location.pathname.endsWith("/create");
 
-    const [showPopUp, setShowPopUp] = useState(false);
-    const [showButton, setShowButton] = useState(true);
+    const initialSession = location.state as Session || null;
 
-    const initialSession = location.state?.session || null;
-
-    const [sessions, setSessions] = useState([])
-    const [presentSession, setPresentSession] = useState(initialSession);
+    const [sessions, setSessions] = useState<Session[]>([])
+    const [presentSession, setPresentSession] = useState<Session | null>(initialSession);
 
     let popupComponent = null;
     if (showPopUp) {
-        popupComponent = (<NamePopUp onGoing={(name: string) => handleGoing(presentSession.id, name)} onClose={() => setShowPopUp(false)} code={presentSession?.code}/>)
+        popupComponent = (
+            <NamePopUp
+                onGoing={(name: string, email: string) => presentSession ? handleGoing(presentSession.id, name, email) : Promise.resolve("")}
+                onClose={() => setShowPopUp(false)}
+            />
+        )
     }
 
     function viewSession(session: Session) {
         setPresentSession(session);
     }
 
-    useEffect(() => {
-        fetch('http://localhost:3000/sessions')
-        .then(res => res.json())
-        .then(data => setSessions(data.sessions))
-    }, [])
 
-    function handleGoing(sessionId: number, name: string): Promise<string> {
-        return fetch(`http://localhost:3000/sessions/${sessionId}/go`, {
+
+    useEffect(() => {
+        fetch(`${API_URL}/sessions`)
+        .then(res => res.json())
+        .then(data => {
+            setSessions(data.sessions);
+            if (!presentSession) {
+                if (initialSession) {
+                    setPresentSession(initialSession);
+                } else if (data.sessions.length > 0) {
+                    setPresentSession(data.sessions[0]);
+                }
+            }
+        });
+    }, []);
+
+
+    function handleGoing(sessionId: number, name: string, email: string): Promise<string> {
+        return fetch(`${API_URL}/sessions/${sessionId}/go`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name })
+            body: JSON.stringify({ name, email })
         })
         .then(res => res.json())
         .then(updated => {
@@ -71,8 +81,13 @@ export default function Overview() {
     } else if (presentSession) {
         rightContent = (
             <>
-                <SessionDetail {...presentSession} attendees={presentSession.attendees} />
-                {(presentSession.attendance < presentSession.capacity) && (
+                <SessionDetail
+                    {...presentSession}
+                    capacity={presentSession.capacity ?? 0}
+                    attendance={presentSession.attendance ?? 0}
+                    attendees={presentSession.attendees ?? []}
+                />
+                {((presentSession.attendance ?? 0) < (presentSession.capacity ?? 0)) && (
                     <div className='go-button'>
                         <button onClick={() => setShowPopUp(true)} className='go-button'>Register</button>
                     </div>

@@ -1,7 +1,8 @@
-import React from 'react'
 import { useState } from 'react'
 import '../src/style/Create.css'
 import ManageCodePopUp from './ManageCodePopUp';
+
+const API_URL = import.meta.env.VITE_API_URL
 
 export default function Create() {
 
@@ -16,21 +17,25 @@ export default function Create() {
     const [manageLink, setManageLink] = useState(null)
     const [manageCode, setManageCode] = useState('')
 
-    async function handleSubmit(e) {
+    const [submitting, setSubmitting] = useState(false)
+
+    async function handleSubmit(e: any) {
         e.preventDefault();
+
+        if (submitting) return; 
+        setSubmitting(true);
 
         const newSession = { email, type, title, date, time, capacity, description, address };
 
         try {
-            const res = await fetch('http://localhost:3000/sessions/create', {
+            const res = await fetch(`${API_URL}/sessions/create`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newSession)
             })
 
             const data = await res.json()
-            console.log('Created session:', data);
-
+            
             setManageLink(data.manageUrl)
             setManageCode(data.manageCode)
 
@@ -45,7 +50,9 @@ export default function Create() {
 
         } catch(err) {
             console.error('Error creating session:', err);
-        } 
+        } finally {
+            setSubmitting(false)
+        }
     }
 
     if (manageLink) {
@@ -105,7 +112,7 @@ export default function Create() {
                 </div>
 
                 <div className="submit-button">
-                    <button onClick={handleSubmit} className='go-button'>Create</button>
+                    <button onClick={handleSubmit} className='go-button' disabled={submitting}>{submitting ? 'Creating...' : 'Create'}</button>
                 </div>
             </div>
         </form>
